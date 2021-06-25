@@ -5,9 +5,9 @@ import java.util.*
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class GenericError(
-    var status: Int = 0,
-    var error: String? = null,
-    var timestamp: Long = Date().time,
-    var path: String? = null,
-    var validationErrors: MutableMap<String, String>? = null
-)
+        var status: Int = 0,
+        var error: String? = null,
+        var validationErrors: MutableMap<String, String>? = null,
+        var path: String? = null,
+        var timestamp: Long = Date().time,
+        )

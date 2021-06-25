@@ -1,15 +1,19 @@
 package com.gitego.todoapi.controllers
 
 import com.gitego.todoapi.controllers.AuthController.Companion.BASE_AUTH_ENDPOINT
+import com.gitego.todoapi.controllers.AuthController.Companion.SECURITY_SCHEME_NAME
 import com.gitego.todoapi.dto.LoginDTO
 import com.gitego.todoapi.dto.SignupDTO
 import com.gitego.todoapi.models.AuthData
 import com.gitego.todoapi.models.GenericResponse
 import com.gitego.todoapi.services.UserService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
@@ -23,7 +27,7 @@ class AuthController(
 
     @PostMapping("login")
     fun login(
-        @RequestBody @Valid loginDTO: LoginDTO,
+        @Valid @RequestBody loginDTO: LoginDTO,
         response: HttpServletResponse
     ): ResponseEntity<GenericResponse<AuthData>> {
         val result = userService.login(loginDTO)
@@ -58,13 +62,14 @@ class AuthController(
     }
 
     @GetMapping("user")
-    fun getUser(@RequestParam("jwt") jwt: String?): ResponseEntity<GenericResponse<Any>> {
-        val user = userService.getUser(jwt) as Map<*, *>
+    @Operation(security = [SecurityRequirement(name = SECURITY_SCHEME_NAME)])
+    fun getUser(principal: Principal): ResponseEntity<GenericResponse<Any>> {
+        val user = userService.getUser(principal.name)
         return ResponseEntity.ok(
             GenericResponse(
                 status = HttpStatus.OK.value(),
                 message = "User data retrieved",
-                data = user["id"]
+                data = user
             )
         )
     }
@@ -81,5 +86,6 @@ class AuthController(
 
     companion object {
         const val BASE_AUTH_ENDPOINT = "/api/v1/auth"
+        const val SECURITY_SCHEME_NAME: String = "bearerAuth"
     }
 }

@@ -1,6 +1,6 @@
 package com.gitego.todoapi.filters
 
-import com.gitego.todoapi.services.CustomUserDetailsService
+import com.gitego.todoapi.services.UserService
 import com.gitego.todoapi.utils.JwtUtil
 import io.jsonwebtoken.ExpiredJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class JwtFilter(
-    private val jwtUserDetailsService: CustomUserDetailsService,
+    private val userService: UserService,
     private val jwtTokenUtil: JwtUtil
 ) : OncePerRequestFilter() {
 
@@ -34,9 +34,9 @@ class JwtFilter(
             try {
                 username = jwtTokenUtil.getUsername(jwtToken)
             } catch (e: IllegalArgumentException) {
-                println("Unable to get JWT Token")
+                logger.error("Unable to get JWT")
             } catch (e: ExpiredJwtException) {
-                println("JWT Token has expired")
+                logger.error("JWT has expired")
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String")
@@ -44,7 +44,7 @@ class JwtFilter(
 
         // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().authentication == null) {
-            val userDetails: UserDetails = jwtUserDetailsService.loadUserByUsername(username)
+            val userDetails: UserDetails = userService.loadUserByUsername(username)
 
             // if token is valid configure Spring Security to manually set
             // authentication
