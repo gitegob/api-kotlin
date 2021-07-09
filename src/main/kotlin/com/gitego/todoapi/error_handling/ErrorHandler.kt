@@ -1,11 +1,9 @@
 package com.gitego.todoapi.error_handling
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include
 import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorController
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.RequestMapping
@@ -31,6 +29,7 @@ class ErrorHandler(
         if (attributes.containsKey("errors")) {
             val fieldErrors = attributes["errors"] as List<FieldError>?
             val validationErrors: MutableMap<String, String?> = HashMap()
+            error.error = "Validation error(s)"
             for (fieldError in fieldErrors!!) {
                 validationErrors[fieldError.field] = fieldError.defaultMessage
             }

@@ -27,7 +27,7 @@ class TodoService(
         )
 
     @Transactional
-    fun findAll(pageable: Pageable, username: String): Page<Todo> {
+    fun findAll(pageable: Pageable?, username: String): Page<Todo> {
         return this.todoRepo.findByUserUsername(pageable, username)
     }
 
@@ -35,9 +35,8 @@ class TodoService(
     fun createTodo(createTodoDto: CreateTodoDTO, username: String): Todo {
         val user = userRepo.findByUsername(username)
         val newTodo = Todo()
-        newTodo.title = createTodoDto.title
-        newTodo.description = createTodoDto.description
-        newTodo.completed = createTodoDto.completed
+        newTodo.title = createTodoDto.title!!
+        newTodo.description = createTodoDto.description!!
         newTodo.user = user
         return this.saveOrUpdate(newTodo)
     }
@@ -62,9 +61,6 @@ class TodoService(
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found")
         this.todoRepo.deleteById(todo.id)
     }
-
-    private fun findTodoById(id: Long): Todo = this.todoRepo.findByIdOrNull(id)
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found")
 
     private fun saveOrUpdate(todo: Todo): Todo = this.todoRepo.save(todo)
 }

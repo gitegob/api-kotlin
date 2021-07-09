@@ -7,6 +7,6 @@ import java.util.*
 data class GenericResponse<T>(
     val status: Int,
     val message: String,
+    val data: T? = null,
     var timestamp: Long = Date().time,
-    val data: T? = null
-)
+    )

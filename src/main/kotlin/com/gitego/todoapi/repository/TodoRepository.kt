@@ -8,11 +8,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TodoRepository : JpaRepository<Todo, Long> {
-
-    fun findByCompletedTrue(pageable: Pageable): Page<Todo>
-    fun findByCompletedFalse(pageable: Pageable): Page<Todo>
-    fun findByUserUsername(pageable: Pageable, username:String): Page<Todo>
-    fun findByCompletedTrueAndUserUsername(pageable: Pageable,username: String): Page<Todo>
-    fun findByCompletedFalseAndUserUsername(pageable: Pageable,username: String): Page<Todo>
+    fun findByUserUsername(pageable: Pageable?, username: String): Page<Todo>
+    fun findByCompletedTrueAndUserUsername(pageable: Pageable, username: String): Page<Todo>
+    fun findByCompletedFalseAndUserUsername(pageable: Pageable, username: String): Page<Todo>
     fun findByIdAndUserUsername(id: Long, username: String): Todo?
 }

@@ -2,7 +2,7 @@ package com.gitego.todoapi.config
 
 import com.gitego.todoapi.controllers.AuthController
 import com.gitego.todoapi.filters.JwtFilter
-import com.gitego.todoapi.services.CustomUserDetailsService
+import com.gitego.todoapi.services.UserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val userDetailsService: CustomUserDetailsService,
+    private val userService: UserService,
     private val jwtFilter:JwtFilter
 ) : WebSecurityConfigurerAdapter() {
 
@@ -31,11 +31,11 @@ class SecurityConfig(
     private lateinit var swaggerDocsPath: String
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth?.userDetailsService(userDetailsService)?.passwordEncoder(passwordEncoder())
+        auth?.userDetailsService(userService)?.passwordEncoder(passwordEncoder())
     }
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder? {
+    fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
 
@@ -57,7 +57,6 @@ class SecurityConfig(
             )
             .permitAll()
             .anyRequest().authenticated().and()
-//            .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)

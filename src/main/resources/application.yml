@@ -26,6 +26,8 @@ springdoc:
     path: /api/docs
   swagger-ui:
     path: /api/swagger-ui
-
+    operationsSorter: method
+    enabled: ${SWAGGER_UI_ENABLED:false}
 jwt:
   secret: ${JWT_SECRET}
+

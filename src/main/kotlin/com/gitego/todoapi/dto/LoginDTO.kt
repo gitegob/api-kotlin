@@ -1,6 +1,10 @@
 package com.gitego.todoapi.dto
 
+import javax.validation.constraints.NotNull
+
 data class LoginDTO(
-    var username: String,
-    var password: String,
+    @field:NotNull
+    var username: String?,
+    @field:NotNull
+    var password: String?,
 )
